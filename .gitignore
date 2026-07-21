@@ -62,3 +62,10 @@ htmlcov/
 
 # Static files
 staticfiles/
+MtaaFixMobile/Expo-Go-57.0.2.apk
+MtaaFixMobile/.expo/
+MtaaFixMobile/.expo-shared/
+MtaaFixMobile/android/local.properties
+MtaaFixMobile/ios/Pods/
+MtaaFixMobile/ios/.xcode.env.local
+MtaaFixMobile/ios/DerivedData/
