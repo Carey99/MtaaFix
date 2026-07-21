@@ -1,0 +1,52 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# Local tooling and editor state
+.claude/
+.DS_Store
+
+# dependencies
+node_modules/
+
+# Expo and Metro caches
+.expo/
+.expo-shared/
+.metro-cache/
+.metro-health-check*
+dist/
+web-build/
+expo-env.d.ts
+
+# Native build outputs
+android/app/build/
+android/.gradle/
+android/local.properties
+android/app/*.jks
+android/app/*.keystore
+ios/Pods/
+ios/build/
+ios/DerivedData/
+ios/*.xcarchive
+ios/*.ipa
+ios/*.dSYM.zip
+
+# Signing and release secrets
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# Debug and package-manager noise
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Local environment files
+.env
+.env.*
+.env*.local
+
+# Generated type artifacts
+*.tsbuildinfo
