@@ -83,7 +83,7 @@ class PasswordResetConfirm(APIView):
         if serializer.is_valid():
             phone       = serializer.validated_data['phone']
             otp_reccord = serializer.validated_data['otp_record']
-            new_pass    = serializer.validated_data['new_passsword']
+            new_pass    = serializer.validated_data['new_password']
             
             #Set the new hashed password
             user = User.objects.get(phone=phone)
