@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "MtaaFixMobile",
+    "slug": "MtaaFixMobile",
+    "version": "1.0.0",
+    "scheme": "mtaafixmobile",
+    "android": {
+      "package": "com.mtaafixmobile.app"
+    },
+    "plugins": [
+      "expo-status-bar"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.mtaafixmobile.app"
+    }
+  }
+}
