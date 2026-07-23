@@ -3,13 +3,13 @@ import {
 	ActivityIndicator,
 	Alert,
 	Pressable,
-	SafeAreaView,
 	StyleSheet,
 	Text,
 	TextInput,
 	View,
 } from 'react-native';
 import apiClient from '../api/client';
+import AuthScreenShell from '../components/auth/AuthScreenShell';
 import { saveAuth } from '../store/authStore';
 
 export default function LoginScreen({ navigation }) {
@@ -46,8 +46,7 @@ export default function LoginScreen({ navigation }) {
 	};
 
 	return (
-		<SafeAreaView style={styles.safeArea}>
-			<View style={styles.container}>
+		<AuthScreenShell>
 				<Text style={styles.title}>Welcome back</Text>
 				<Text style={styles.subtitle}>Sign in with your phone number and password.</Text>
 
@@ -77,14 +76,11 @@ export default function LoginScreen({ navigation }) {
 				<Pressable onPress={() => navigation.navigate('Register')}>
 					<Text style={styles.link}>Create an account</Text>
 				</Pressable>
-			</View>
-		</SafeAreaView>
+		</AuthScreenShell>
 	);
 }
 
 const styles = StyleSheet.create({
-	safeArea: { flex: 1, backgroundColor: '#08111f' },
-	container: { flex: 1, padding: 24, justifyContent: 'center' },
 	title: { color: '#f8fafc', fontSize: 32, fontWeight: '700', marginBottom: 8 },
 	subtitle: { color: '#94a3b8', fontSize: 16, marginBottom: 24 },
 	input: {

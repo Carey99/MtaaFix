@@ -3,13 +3,13 @@ import {
 	ActivityIndicator,
 	Alert,
 	Pressable,
-	SafeAreaView,
 	StyleSheet,
 	Text,
 	TextInput,
 	View,
 } from 'react-native';
 import apiClient from '../api/client';
+import AuthScreenShell from '../components/auth/AuthScreenShell';
 import { saveAuth } from '../store/authStore';
 
 const ROLE_OPTIONS = [
@@ -57,8 +57,7 @@ export default function RegisterScreen({ navigation }) {
 	};
 
 	return (
-		<SafeAreaView style={styles.safeArea}>
-			<View style={styles.container}>
+		<AuthScreenShell>
 				<Text style={styles.title}>Create account</Text>
 				<Text style={styles.subtitle}>Choose whether you are joining as a client or worker.</Text>
 
@@ -123,14 +122,11 @@ export default function RegisterScreen({ navigation }) {
 				<Pressable onPress={() => navigation.navigate('Login')}>
 					<Text style={styles.link}>Already have an account? Sign in</Text>
 				</Pressable>
-			</View>
-		</SafeAreaView>
+		</AuthScreenShell>
 	);
 }
 
 const styles = StyleSheet.create({
-	safeArea: { flex: 1, backgroundColor: '#08111f' },
-	container: { flex: 1, padding: 24, justifyContent: 'center' },
 	title: { color: '#f8fafc', fontSize: 32, fontWeight: '700', marginBottom: 8 },
 	subtitle: { color: '#94a3b8', fontSize: 16, marginBottom: 24 },
 	input: {
