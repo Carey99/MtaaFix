@@ -28,7 +28,7 @@ apiClient.interceptors.request.use(
 );
 
 //runs before every response - catches 401 globally
-//if server denies our token, clear immediately, user ill be forced to login again
+//if server denies our token, clear immediately, user will be forced to login again
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
