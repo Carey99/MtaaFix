@@ -149,3 +149,10 @@ SIMPLE_JWT = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+    '172.25.245.90',
+    '*'
+]
+
