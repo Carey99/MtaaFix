@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "scheme": "mtaafixmobile",
     "android": {
-      "package": "com.mtaafixmobile.app"
+      "package": "com.mtaafixmobile.app",
+      "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [
       "expo-status-bar"

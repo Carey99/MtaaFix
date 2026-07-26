@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const BASE_URL = 'http://172.25.245.90:8000'; //Backend API base URL
+const BASE_URL = 'http://192.168.1.101:8000'; //Backend API base URL
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
@@ -16,6 +16,8 @@ const apiClient = axios.create({
 //check for saved tokens add to add(to avoid adding Auth bearer manually)
 apiClient.interceptors.request.use(
     async (config) => {
+        console.log('REQUEST:', config.method.toUpperCase(), config.url);
+        console.log('DATA:', config.data)
         const token = await AsyncStorage.getItem('access_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -23,6 +25,7 @@ apiClient.interceptors.request.use(
         return config;
     },
     (error) => {
+        console.error('REQUEST ERROR:', error.message);
         return Promise.reject(error);
     }
 );
@@ -30,8 +33,13 @@ apiClient.interceptors.request.use(
 //runs before every response - catches 401 globally
 //if server denies our token, clear immediately, user will be forced to login again
 apiClient.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        console.log('RESPONSE:', response.status, response.data);
+        return response;
+    },
     async (error) => {
+        console.log('RESPONSE ERROR:', error.code, error.message);
+        console.log('ERROR DETAILS', error.response?.status, error.response?.data);
         if (error.response?.status === 401) {
             await AsyncStorage.multiRemove(['access_token', 'refresh_token', 'user_role', 'user_name'])
         }
