@@ -75,3 +75,8 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
             
         data['otp_record'] = otp_record
         return data
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'phone', 'name', 'role']
