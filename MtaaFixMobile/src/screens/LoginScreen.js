@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useContext, useState } from 'react';
 import {
 	ActivityIndicator,
 	Alert,
@@ -10,12 +10,15 @@ import {
 } from 'react-native';
 import apiClient from '../api/client';
 import AuthScreenShell from '../components/auth/AuthScreenShell';
-import { saveAuth } from '../store/authStore';
+import { AuthContext } from '../context/AutthContext';
 
 export default function LoginScreen({ navigation }) {
+	const { login, user, userRole } = useContext(AuthContext);
 	const [phone, setPhone] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
+
+	
 
 	const onLogin = async () => {
 		if (!phone || !password) {
@@ -30,16 +33,11 @@ export default function LoginScreen({ navigation }) {
 				password,
 			});
 
-			await saveAuth(response.data.tokens, response.data.user);
-			navigation.reset({
-				index: 0,
-				routes: [
-					{ name: response.data.user.role === 'worker' ? 'WorkerDashboard' : 'ClientDashboard' },
-				],
-			});
+			await login(response.data.tokens, response.data.user);
+
 		} catch (error) {
 			const message = error.response?.data ? JSON.stringify(error.response.data) : error.message;
-			Alert.alert('Login failed', message);
+			Alert.alert('Login failed');
 		} finally {
 			setLoading(false);
 		}

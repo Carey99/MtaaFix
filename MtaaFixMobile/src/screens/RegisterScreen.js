@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
 	ActivityIndicator,
 	Alert,
@@ -11,6 +11,7 @@ import {
 import apiClient from '../api/client';
 import AuthScreenShell from '../components/auth/AuthScreenShell';
 import { saveAuth } from '../store/authStore';
+import { AuthContext } from '../context/AutthContext'
 
 const ROLE_OPTIONS = [
 	{ label: 'Client', value: 'client' },
@@ -24,6 +25,7 @@ export default function RegisterScreen({ navigation }) {
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [loading, setLoading] = useState(false);
+	const { login } = useContext(AuthContext);
 
 	const onRegister = async () => {
 		if (!phone || !name || !password || !confirmPassword) {
@@ -41,13 +43,8 @@ export default function RegisterScreen({ navigation }) {
 				confirm_password: confirmPassword,
 			});
 
-			await saveAuth(response.data.tokens, response.data.user);
-			navigation.reset({
-				index: 0,
-				routes: [
-					{ name: response.data.user.role === 'worker' ? 'WorkerDashboard' : 'ClientDashboard' },
-				],
-			});
+			await login(response.data.tokens, response.data.user);
+
 		} catch (error) {
 			const message = error.response?.data ? JSON.stringify(error.response.data) : error.message;
 			Alert.alert('Register failed', message);
