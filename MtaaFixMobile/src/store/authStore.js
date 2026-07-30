@@ -1,8 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableNativeFeedbackComponent } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//---- SAVE ----------------
-//Called after login or register succeeds
 export const saveAuth = async (tokens, user) => {
     await AsyncStorage.multiSet([
         ['access_token', tokens.access],
@@ -14,39 +11,51 @@ export const saveAuth = async (tokens, user) => {
     ]);
 };
 
-
-//---- READ ---------------
-export const getToken = () => AsyncStorage.getItem('access_token');
-export const getRole  = () => AsyncStorage.getItem('user_role');
-export const getName  = () => AsyncStorage.getItem('user_name');
-export const getId    = () => AsyncStorage.getItem('user_id');
-export const getPhone = () => AsyncStorage.getItem('user_phone');
-
-// Get everything at once — used by AppNavigator on app open
+// FIXED: Now returns object with token and role
 export const getAuthState = async () => {
-  const pairs = await AsyncStorage.multiGet([
-    'access_token', 'user_role', 'user_name', 'user_id', 'user_phone'
-  ]);
-  // multiGet returns [['key', 'value'], ...] — convert to object
-  const result = Object.fromEntries(pairs);
-  return {
-    token: result['access_token'],
-    role:  result['user_role'],
-    name:  result['user_name'],
-    id:    result['user_id'],
-    phone: result['user_phone'],
-  };
+    try {
+        const token = await AsyncStorage.getItem('access_token');
+        const role = await AsyncStorage.getItem('user_role');
+        
+        console.log('[authStore] getAuthState - token exists:', !!token);
+        console.log('[authStore] getAuthState - role:', role);
+        
+        return {
+            token: token || null,
+            role: role || null,
+        };
+    } catch (error) {
+        console.error('[authStore] getAuthState error:', error);
+        return {
+            token: null,
+            role: null,
+        };
+    }
 };
 
-// ─── CLEAR ───────────────────────────────────────────────
-// Called on logout
+export const getName = async () => {
+    return await AsyncStorage.getItem('user_name') || 'User';
+};
+
+export const getPhone = async () => {
+    return await AsyncStorage.getItem('user_phone');
+};
+
+export const getRole = async () => {
+    return await AsyncStorage.getItem('user_role');
+};
+
 export const clearAuth = async () => {
-  await AsyncStorage.multiRemove([
-    'access_token',
-    'refresh_token',
-    'user_role',
-    'user_name',
-    'user_id',
-    'user_phone',
-  ]);
+    await AsyncStorage.multiRemove([
+        'access_token',
+        'refresh_token',
+        'user_role',
+        'user_name',
+        'user_id',
+        'user_phone',
+    ]);
+};
+
+export const logout = async () => {
+    await clearAuth();
 };
