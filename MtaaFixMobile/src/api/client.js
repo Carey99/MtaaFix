@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const BASE_URL = 'http://192.168.1.101:8000'; //Backend API base URL
+const BASE_URL = 'https://mtaafix-api.onrender.com'; //Backend API base URL
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
