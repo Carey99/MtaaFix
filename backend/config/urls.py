@@ -17,8 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+
+def status_view(request):
+    return JsonResponse({'status': 'ok', 'message': 'server is running'})
 
 urlpatterns = [
+    path('status/', status_view),
     path("admin/", admin.site.urls),
     path('api/auth/', include('users.urls')),
     path('api/jobs/', include('jobs.urls')),
