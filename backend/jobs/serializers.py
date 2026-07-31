@@ -11,8 +11,8 @@ class JobSerializer(serializers.ModelSerializer):
         fields = ['id', 'client', 'title', 'description', 'category',
                   'location', 'budget', 'status', 'created_at', 'applications_count']
         
-        def get_applications_count(self, obj):
-            return obj.applications.count()
+    def get_applications_count(self, obj):
+        return obj.applications.count()
         
 class JobApplicationSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
