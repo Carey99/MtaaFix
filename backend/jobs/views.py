@@ -57,6 +57,10 @@ class JobApplicationView(APIView):
         # Workers: POST apply for a job
         serializer = JobApplicationSerializer(data=request.data)
         if serializer.is_valid():
+            job = serializer.validated_data['job']
+            if JobApplication.objects.filter(job=job, worker=request.user).exists():
+                return Response({'detail': 'You have already applied for this job.'}, status=status.HTTP_400_BAD_REQUEST)
+
             serializer.save(worker=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
