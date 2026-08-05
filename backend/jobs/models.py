@@ -57,7 +57,7 @@ class Job(models.Model):
     
 class JobApplication(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
+        ('applied', 'Applied'),
         ('accepted', 'Accepted'),
         ('rejected', 'Rejected'),
     ]
@@ -65,7 +65,7 @@ class JobApplication(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
     worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_applications')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')
     message = models.TextField(blank=True, null=True)
     applied_at = models.DateTimeField(auto_now_add=True)
     
