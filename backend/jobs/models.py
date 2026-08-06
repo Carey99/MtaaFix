@@ -60,7 +60,7 @@ class Job(models.Model):
 class JobApplication(models.Model):
     STATUS_CHOICES = [
         ('applied', 'Applied'),
-        ('acceted', 'Accepted'),
+        ('accepted', 'Accepted'),
         ('rejected', 'Rejected'),
     ]
     
