@@ -25,7 +25,8 @@ class JobApplicationSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
     job = JobSummarySerializer(read_only=True)
     job_id = serializers.PrimaryKeyRelatedField(source='job', queryset=Job.objects.all(), write_only=True)
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=True)
     
     class Meta:
         model = JobApplication
-        fields = ['id', 'job', 'job_id', 'worker', 'status', 'message', 'applied_at']
+        fields = ['id', 'job', 'job_id', 'worker', 'status', 'amount', 'message', 'applied_at']
