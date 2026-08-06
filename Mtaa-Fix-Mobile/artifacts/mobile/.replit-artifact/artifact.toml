@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/"
+title = "MtaaFix Mobile"
+description = "MtaaFix mobile app for Kenya's local service marketplace. Connects clients who post jobs (plumbing, electrical, cleaning, etc.) with workers who apply. Features a dark-themed UI with Home (greeting + current job status timeline), Work (tabbed job listings: open/in-progress/closed), and Bids (accepted/completed) screens with a custom bottom tab bar."
+version = "1.0.0"
+id = "artifacts/mobile"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/" ]
+localPort = 18115
+
+[services.development]
+run = "pnpm --filter @workspace/mobile run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/mobile", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/mobile", "run", "serve" ]
+
+[services.env]
+PORT = "18115"
+BASE_PATH = "/"
