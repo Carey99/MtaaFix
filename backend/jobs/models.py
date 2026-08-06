@@ -22,6 +22,7 @@ class Job(models.Model):
     
     STATUS_CHOICES = [
         ('open', 'Open'),
+        ('assigned', 'Assigned'),
         ('in_progress', 'In progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
@@ -29,6 +30,7 @@ class Job(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_jobs')
+    assigned_worker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_jobs')
     title = models.CharField(max_length=200)
     description = models.TextField()
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
@@ -58,7 +60,7 @@ class Job(models.Model):
 class JobApplication(models.Model):
     STATUS_CHOICES = [
         ('applied', 'Applied'),
-        ('accepted', 'Accepted'),
+        ('acceted', 'Accepted'),
         ('rejected', 'Rejected'),
     ]
     
@@ -66,6 +68,7 @@ class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
     worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_applications')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     message = models.TextField(blank=True, null=True)
     applied_at = models.DateTimeField(auto_now_add=True)
     
