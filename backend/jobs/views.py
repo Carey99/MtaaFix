@@ -84,12 +84,32 @@ class JobApplicationsForJobView(APIView):
         #clients: accept/reject applications
         
         try:
-            app = JobApplication.objects.get(id=request.data.get('application_id'))
+            job = Job.objects.get(id=job_id, client=request.user)
         except JobApplication.DoesNotExist:
-            return Response({'error': 'Application not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Job not found or not yours'}, status=status.HTTP_404_NOT_FOUND)
         
-        app.status = request.data.get('status') #'accepted' or 'rejected'
+        new_status = request.data.get('status') #'accepted' or 'rejected'
+        if new_status not in ('accepted', 'rejected'):
+            return Response({'error': "status must be 'accepted' or 'rejected'"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            app = JobApplication.objects.get(id=request.data.get('application_id'), job=job)
+        except JobApplication.DoesNotExist:
+            return Response({'error': 'Application not found for this job'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if job.status != 'open':
+            return Response({'error': f"This job is '{job.status}', offers can no longer be accepted or rejected."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        app.status = new_status
         app.save()
         
+        if new_status == 'accepted':
+            job.assigned_worker = app.worker
+            job.status = 'assigned'
+            job.save()
+            
+            # everyone else who applied loses their shot
+            JobApplication.objects.filter(job=job, status='applied').exclude(id=app.id).update(status='rejected')
+            
         serializer = JobApplicationSerializer(app)
         return Response(serializer.data)
