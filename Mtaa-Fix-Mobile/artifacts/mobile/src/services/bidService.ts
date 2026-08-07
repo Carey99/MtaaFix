@@ -23,6 +23,21 @@ export const bidApi = {
     const res = await apiClient.get<Application[]>('/api/jobs/my-jobs/');
     return res.data;
   },
+
+  /** Client only: list every offer made on one of their jobs. */
+  async getForJob(jobId: string): Promise<Application[]> {
+    const res = await apiClient.get<Application[]>(`/api/jobs/applications/${jobId}/`);
+    return res.data;
+  },
+
+  /** Client only: accept or reject one offer on their job. */
+  async decide(jobId: string, applicationId: string, decision: 'accepted' | 'rejected'): Promise<Application> {
+    const res = await apiClient.put<Application>(`/api/jobs/applications/${jobId}/`, {
+      application_id: applicationId,
+      status: decision,
+    });
+    return res.data;
+  },
 };
 
 // ─── Hooks ───────────────────────────────────────────────────────────────────
@@ -46,6 +61,30 @@ export function useCreateBid() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [KEY] });
       qc.invalidateQueries({ queryKey: ['jobs'] });
+    },
+  });
+}
+
+/** Client only: offers made on one of their jobs. */
+export function useJobOffers(jobId: string) {
+  return useQuery<Application[]>({
+    queryKey: [KEY, 'for-job', jobId],
+    queryFn: () => bidApi.getForJob(jobId),
+    enabled: !!jobId,
+  });
+}
+
+/** Client only: accept or reject an offer. Refreshes the offers list and the job itself
+ * (since accepting flips job.status to 'assigned' and sets assigned_worker). */
+export function useDecideOffer(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ applicationId, decision }: { applicationId: string; decision: 'accepted' | 'rejected' }) =>
+      bidApi.decide(jobId, applicationId, decision),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [KEY, 'for-job', jobId] });
+      qc.invalidateQueries({ queryKey: ['jobs', jobId] });
+      qc.invalidateQueries({ queryKey: ['jobs', 'mine'] });
     },
   });
 }
