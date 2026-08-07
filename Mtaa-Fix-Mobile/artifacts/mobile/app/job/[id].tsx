@@ -27,7 +27,7 @@ export default function JobDetailsScreen() {
   const [applying, setApplying] = useState(false);
 
   const isWorker = user?.role === 'worker';
-  const alreadyApplied = isWorker && applications?.some((application) => application.job?.id === id);
+  const myApplication = isWorker ? applications?.find((application) => application.job?.id === id) : undefined;
   const topPad = Platform.OS === 'web' ? 67 : insets.top;
 
   const handleApply = async () => {
@@ -47,11 +47,11 @@ export default function JobDetailsScreen() {
       setShowApplyForm(false);
       setMessage('');
       setAmount('');
-      Alert.alert('Applied!', 'Your application has been sent to the client.');
+      Alert.alert('Offer sent!', 'Client received offer');
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-        'Could not submit application. You may have already applied.';
+        'Could not send offer. You may have already made one.';
       Alert.alert('Error', msg);
     } finally {
       setApplying(false);
@@ -105,13 +105,45 @@ export default function JobDetailsScreen() {
           <Text style={[styles.desc, { color: colors.mutedForeground }]}>{job.description}</Text>
 
           {/* Apply section — workers only, open jobs only */}
-          {isWorker && job.status === 'open' && (
+          {isWorker && (
             <View style={styles.applySection}>
-              {alreadyApplied ? (
+              {myApplication ? (
                 <View style={[styles.appliedNotice, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Ionicons name="checkmark-circle-outline" size={18} color={colors.primary} />
-                  <Text style={[styles.appliedText, { color: colors.foreground }]}>Applied</Text>
-                  <Text style={[styles.appliedSubtext, { color: colors.mutedForeground }]}>This job is already in your applied list.</Text>
+                  {myApplication.status === 'accepted' ? (
+                    <>
+                      <Ionicons name="checkmark-circle" size={18} color={colors.primary} />
+                      <Text style={[styles.appliedText, { color: colors.foreground }]}>Offer accepted</Text>
+                      <Text style={[styles.appliedSubtext, { color: colors.mutedForeground }]}>
+                        You got this job — Ksh {Number(myApplication.amount).toLocaleString()}.
+                      </Text>
+                    </>
+                  ) : myApplication.status === 'rejected' ? (
+                    <>
+                      <Ionicons name="close-circle-outline" size={18} color={colors.mutedForeground} />
+                      <Text style={[styles.appliedText, { color: colors.foreground }]}>Not selected</Text>
+                      <Text style={[styles.appliedSubtext, { color: colors.mutedForeground }]}>
+                        The client went with another worker for this one.
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Ionicons name="time-outline" size={18} color={colors.primary} />
+                      <Text style={[styles.appliedText, { color: colors.foreground }]}>Offer sent</Text>
+                      <Text style={[styles.appliedSubtext, { color: colors.mutedForeground }]}>
+                        Your offer of Ksh {Number(myApplication.amount).toLocaleString()} is waiting on the client.
+                      </Text>
+                    </>
+                  )}
+                </View>
+              ) : job.status !== 'open' ? (
+                <View style={[styles.appliedNotice, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Ionicons name="lock-closed-outline" size={18} color={colors.mutedForeground} />
+                  <Text style={[styles.appliedText, { color: colors.foreground }]}>No longer available</Text>
+                  <Text style={[styles.appliedSubtext, { color: colors.mutedForeground }]}>
+                    {job.status === 'cancelled'
+                      ? 'This request was cancelled by the client.'
+                      : 'This job has already been assigned to another worker.'}
+                  </Text>
                 </View>
               ) : showApplyForm ? (
                 <View style={styles.applyForm}>
@@ -167,7 +199,7 @@ export default function JobDetailsScreen() {
                   activeOpacity={0.85}
                 >
                   <Text style={[styles.applyBtnText, { color: colors.primaryForeground }]}>
-                    Apply for this job
+                    Make an offer
                   </Text>
                 </TouchableOpacity>
               )}
