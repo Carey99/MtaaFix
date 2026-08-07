@@ -46,6 +46,7 @@ function RootLayoutNav() {
       <Stack.Screen name="profile" options={{ animation: 'slide_from_right' }} />
       <Stack.Screen name="post-job" options={{ animation: 'slide_from_bottom' }} />
       <Stack.Screen name="job/[id]" options={{ animation: 'slide_from_right' }} />
+      <Stack.Screen name="job-offers/[id]" options={{ animation: 'slide_from_right' }} />
     </Stack>
   );
 }
