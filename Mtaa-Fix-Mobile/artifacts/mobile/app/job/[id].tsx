@@ -104,6 +104,21 @@ export default function JobDetailsScreen() {
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Description</Text>
           <Text style={[styles.desc, { color: colors.mutedForeground }]}>{job.description}</Text>
 
+          {/* Offers entry point — client, own job only */}
+          {user?.role === 'client' && job.client?.id === user?.id && (
+            <TouchableOpacity
+              style={[styles.applyBtn, { backgroundColor: colors.primary, marginBottom: 24 }]}
+              onPress={() => router.push(`/job-offers/${job.id}`)}
+              activeOpacity={0.85}
+            >
+              <Text style={[styles.applyBtnText, { color: colors.primaryForeground }]}>
+                {job.status === 'open'
+                  ? `View Offers${job.applications_count ? ` (${job.applications_count})` : ''}`
+                  : 'View Offer Details'}
+              </Text>
+            </TouchableOpacity>
+          )}
+
           {/* Apply section — workers only, open jobs only */}
           {isWorker && (
             <View style={styles.applySection}>
