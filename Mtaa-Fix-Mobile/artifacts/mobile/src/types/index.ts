@@ -38,7 +38,7 @@ export interface AuthResponse {
 
 // ─── Jobs ────────────────────────────────────────────────────────────────────
 
-export type JobStatus = 'open' | 'in_progress' | 'completed' | 'cancelled';
+export type JobStatus = 'open' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
 
 export type JobCategory =
   | 'plumbing'
@@ -61,6 +61,7 @@ export interface Job {
   status: JobStatus;
   created_at: string;
   client?: User;
+  assigned_worker?: User | null;
   applications_count?: number;
 }
 
@@ -80,6 +81,7 @@ export interface Application {
   id: string;
   job: Job;
   worker?: User;
+  amount: string; 
   message: string;
   status: ApplicationStatus;
   applied_at: string; // API field name (not created_at)
@@ -87,5 +89,6 @@ export interface Application {
 
 export interface CreateBidPayload {
   job_id: string; // job UUID
+  amount: string; 
   message: string;
 }
