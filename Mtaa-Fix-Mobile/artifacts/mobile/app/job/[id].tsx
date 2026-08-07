@@ -22,6 +22,7 @@ export default function JobDetailsScreen() {
   const createBid = useCreateBid();
 
   const [message, setMessage] = useState('');
+  const [amount, setAmount] = useState('');
   const [showApplyForm, setShowApplyForm] = useState(false);
   const [applying, setApplying] = useState(false);
 
@@ -34,12 +35,18 @@ export default function JobDetailsScreen() {
       Alert.alert('Message required', 'Tell the client why you are the right fit.');
       return;
     }
+    const trimmedAmount = amount.trim();
+    if (!trimmedAmount || isNaN(Number(trimmedAmount)) || Number(trimmedAmount) <= 0) {
+      Alert.alert('Offer amount required', 'Enter how much you would charge for this job.');
+      return;
+    }
     setApplying(true);
     try {
-      await createBid.mutateAsync({ job_id: id ?? '', message: message.trim() });
+      await createBid.mutateAsync({ job_id: id ?? '', amount: trimmedAmount, message: message.trim() });
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setShowApplyForm(false);
       setMessage('');
+      setAmount('');
       Alert.alert('Applied!', 'Your application has been sent to the client.');
     } catch (err: unknown) {
       const msg =
@@ -108,6 +115,17 @@ export default function JobDetailsScreen() {
                 </View>
               ) : showApplyForm ? (
                 <View style={styles.applyForm}>
+                  <TextInput
+                    style={[
+                      styles.textarea,
+                      { backgroundColor: colors.card, color: colors.foreground, borderColor: colors.border, minHeight: 48 },
+                    ]}
+                    placeholder="Your offer (KSh)"
+                    placeholderTextColor={colors.mutedForeground}
+                    value={amount}
+                    onChangeText={setAmount}
+                    keyboardType="numeric"
+                  />
                   <TextInput
                     style={[
                       styles.textarea,
