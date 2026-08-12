@@ -15,7 +15,7 @@ class Job(models.Model):
         ('cleaning', 'Cleaning'),
         ('fumigation', 'Fumigation'),
         ('installation', 'Installation'),
-        ('capentry', 'Capentry'),
+        ('carpentry', 'Carpentry'),
         ('delivery', 'Delivery'),
         ('other', 'Other'),
     ]
